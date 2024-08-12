@@ -259,3 +259,55 @@ def main():
         print_maze(maze, style='blocks')
 
     display_maze_stats(maze)
+
+ solve_option = input("\nDo you want to solve the maze? (y/n): ").lower()
+    if solve_option == 'y':
+        interactive_option = input("Solve manually or automatically? (m/a): ").lower()
+        if interactive_option == 'm':
+            interactive_maze_solver(maze)
+            log_event("User solved maze manually.")
+        elif interactive_option == 'a':
+            solution = []
+            start_time = time.time()
+            if solve_maze(maze, 1, 1, solution):
+                solve_time = time.time() - start_time
+                print("\nMaze Solved! Solution Path:")
+                for step in solution:
+                    print(step)
+                print(f"Solution Length: {maze_complexity(solution)}")
+                print(f"Solve Time: {solve_time:.2f} seconds")
+                display_solution_path(solution)
+                log_event(f"Maze solved automatically in {solve_time:.2f} seconds.")
+            else:
+                print("\nNo solution found.")
+                log_event("Maze solving failed.")
+        
+        # Option to reset the maze and try again
+        retry_option = input("\nDo you want to reset the maze and try again? (y/n): ").lower()
+        if retry_option == 'y':
+            reset_maze(maze)
+            main()
+
+    print(f"Maze Generation Time: {generation_time:.2f} seconds")
+
+    # Save user preferences
+    preferences = {
+        'difficulty': choose_difficulty(),
+        'algorithm': choose_algorithm()
+    }
+    save_user_preferences(preferences)
+
+
+def generate_prim_maze(width, height):
+    maze = [[WALL for _ in range(width)] for _ in range(height)]
+    walls = [(1, 1)]
+
+    def add_walls(x, y):
+        for dx, dy in DIRECTIONS:
+            nx, ny = x + dx * 2, y + dy * 2
+            if 0 < nx < height - 1 and 0 < ny < width - 1 and maze[nx][ny] == WALL:
+                walls.append((nx, ny))
+                maze[x + dx][y + dy] = PASSAGE
+
+    maze[1][1] = PASSAGE
+    add_walls(1, 1)
