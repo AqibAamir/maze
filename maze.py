@@ -37,7 +37,7 @@ def create_maze(width, height):
     return maze
 
 # Function to print the maze with visualization options
-def print_maze(maze, style='default', colored_output=False):
+def print_maze(maze, style='Default', colored_output=False):
     styles = {
         'default': {WALL: '#', PASSAGE: ' ', START: 'S', EXIT: 'E', VISITED: '.', PLAYER: 'P'},
         'dots': {WALL: '•', PASSAGE: ' ', START: 'S', EXIT: 'E', VISITED: '.', PLAYER: 'P'},
@@ -57,7 +57,7 @@ def print_maze(maze, style='default', colored_output=False):
 def save_maze_to_file(maze, filename):
     with open(filename, 'w') as file:
         for row in maze:
-            file.write(''.join(row) + '\n')
+            file.write(''.joining(row) + '\n')
     print(f"Maze information saved  to {filename}")
 
 # Function to export the maze as CSV file
@@ -122,7 +122,7 @@ def display_maze_stats(maze):
     print(f" - Exit Position: ({len(maze) - 1}, {len(maze[0]) - 2})")
     print(f" - Maze Difficulty: {evaluate_difficulty(maze, dead_ends, loops)}")
 
-# Count dead ends in the maze
+
 def count_dead_ends(maze):
     dead_ends = 0
     for x in range(1, len(maze) - 1):
@@ -149,8 +149,55 @@ def evaluate_difficulty(maze, dead_ends, loops):
     size_factor = len(maze) * len(maze[0])
     difficulty_score = (dead_ends + loops) / size_factor
     if difficulty_score > 0.2:
-        return "Hard"
+        return "hard"
     elif difficulty_score > 0.1:
-        return "Medium"
+        return "medium"
     else:
-        return "Easy"
+        return "Easy."
+
+
+# Function to let the user define a custom pattern for the maze
+def custom_maze_theme():
+    wall = input("Enter a symbol for walls: ") or WALL
+    passage = input("Enter a symbol for passages: ") or PASSAGE
+    start = input("Enter a symbol from the start: ") or START
+    exit = input("Enter a symbol for the exit: ") or EXIT
+    return {WALL: wall, PASSAGE: passage, START: start, EXIT: exit, VISITED: VISITED, PLAYER: PLAYER}
+
+# Function to allow the user to interactively solve the maze
+def interactive_maze_solver(maze):
+    x, y = 1, 1
+    maze[x][y] = PLAYER
+    print_maze(maze)
+
+    while (x, y) != (len(maze) - 2, len(maze[0]) - 2):
+        move = input("move (WASD): ").lower()
+        if move in ['w', 'a', 's', 'd']:
+            dx, dy = {'w': (-1, 0), 's': (1, 0), 'a': (0, -1), 'd': (0, 1)}[move]
+            nx, ny = x + dx, y + dy
+            if maze[nx][ny] == PASSAGE or maze[nx][ny] == EXIT:
+                maze[x][y] = PASSAGE
+                x, y = nx, ny
+                maze[x][y] = PLAYER
+            print_maze(maze)
+        else:
+            print("Invalid move. Use 'W' for up, 'A' for left, 'S' for down, and 'D' for right.")
+
+    print("Congratulations! You solved the maze!")
+
+# Function to calculate the complexity of the maze based on the solution path length
+def maze_complexity(solution):
+    return len(solution) if solution else 0
+
+# Function to reset the maze for a new attempt
+def reset_maze(maze):
+    for x in range(len(maze)):
+        for y in range(len(maze[0])):
+            if maze[x][y] in [PLAYER, VISITED]:
+                maze[x][y] = PASSAGE
+    print("Maze reset successfully.")
+
+# Function to display the solution path
+def display_solution_path(solution):
+    for step in solution:
+        print(f"Step: {step}")
