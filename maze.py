@@ -382,3 +382,68 @@ def bfs_path_length(maze, start_x, start_y):
                 queue.append((nx, ny, length + 1))
                 visited.add((nx, ny))
     return None
+
+def identify_bottlenecks(maze):
+    bottlenecks = []
+    for x in range(1, len(maze) - 1):
+        for y in range(1, len(maze[0]) - 1):
+            if maze[x][y] == PASSAGE:
+                passages = sum(maze[x + dx][y + dy] == PASSAGE for dx, dy in DIRECTIONS)
+                if passages == 1:  # Dead end
+                    bottlenecks.append((x, y))
+    return bottlenecks
+
+# Improved logging with action tracking
+def log_action(action_message, filename='maze_action_log.txt'):
+    with open(filename, 'a') as file:
+        file.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')} - {action_message}\n")
+    print(f"Action logged: {action_message}")
+
+# Adding additional user preference options
+def choose_difficulty():
+    difficulties = {'1': 'Easy', '2': 'Medium', '3': 'Hard'}
+    print("Select maze difficulty:")
+    for key, value in difficulties.items():
+        print(f"{key}: {value}")
+    choice = input("Enter choice (1/2/3): ").strip()
+    return difficulties.get(choice, 'Easy')
+
+def choose_algorithm():
+    algorithms = {'1': 'DFS', '2': 'Prim', '3': 'Random'}
+    print("Select maze generation algorithm:")
+    for key, value in algorithms.items():
+        print(f"{key}: {value}")
+    choice = input("Enter choice (1/2/3): ").strip()
+    return algorithms.get(choice, 'DFS')
+
+# Function to display user manual
+def display_user_manual():
+    manual = """
+    Maze Generator User Manual:
+
+    1. Generating a Maze:
+       - Select the maze width and height (must be odd and >= 7).
+       - Choose the difficulty level and generation algorithm.
+
+    2. Saving the Maze:
+       - Save the maze to a text file.
+       - Optionally export the maze as CSV or JSON.
+
+    3. Solving the Maze:
+       - Choose to solve the maze manually or automatically.
+       - For manual solving, use 'W', 'A', 'S', 'D' to move.
+       - For automatic solving, view the solution path and statistics.
+
+    4. Analyzing the Maze:
+       - View maze statistics including walls, passages, dead ends, and loops.
+       - Export maze data in different formats.
+       - Analyze path lengths and identify bottlenecks.
+
+    5. Configuration and Preferences:
+       - Save and load user preferences for difficulty and algorithm.
+       - Customize maze themes and logging options.
+
+    For additional help, consult the documentation or contact support.
+    """
+    print(manual)
+
