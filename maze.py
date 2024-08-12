@@ -201,3 +201,61 @@ def reset_maze(maze):
 def display_solution_path(solution):
     for step in solution:
         print(f"Step: {step}")
+
+
+# Function to log events with detailed timestamps
+def log_event(event_message):
+    with open('maze_log.txt', 'a') as log_file:
+        log_file.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')} - {event_message}\n")
+
+# Function to save user preferences to a configuration file
+def save_user_preferences(preferences):
+    with open('user_preferences.json', 'w') as file:
+        json.dump(preferences, file)
+    print("User preferences saved.")
+
+# Function to load user preferences from a configuration file
+def load_user_preferences():
+    try:
+        with open('user_preferences.json', 'r') as file:
+            return json.load(file)
+    except FileNotFoundError:
+        return {}
+
+# Main function to run the maze program
+def main():
+    print("Welcome to the Maze Generator!")
+
+    # Load user preferences
+    user_preferences = load_user_preferences()
+
+    # Select difficulty and algorithm
+    width, height = choose_difficulty()
+    algorithm = choose_algorithm()
+    
+    start_time = time.time()
+
+    # Generate the maze based on the selected algorithm
+    if algorithm == 'dfs':
+        maze = create_maze(width, height)
+    elif algorithm == 'prim':
+        maze = generate_prim_maze(width, height)
+    elif algorithm == 'random':
+        maze = random_maze(width, height)  # Implement a simple random maze generator
+    else:
+        print("Unknown algorithm. Using DFS by default.")
+        maze = create_maze(width, height)
+
+    generation_time = time.time() - start_time
+
+    log_event(f"Maze generated using {algorithm} algorithm with dimensions {width}x{height}")
+
+    print("\nGenerated Maze:")
+    theme_option = input("Do you want to use a custom theme? (y/n): ").lower()
+    if theme_option == 'y':
+        theme = custom_maze_theme()
+        print_maze(maze, style='default', colored_output=False)
+    else:
+        print_maze(maze, style='blocks')
+
+    display_maze_stats(maze)
