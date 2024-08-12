@@ -260,6 +260,17 @@ def main():
 
     display_maze_stats(maze)
 
+ save_option = input("\nDo you want to save the maze to a file? (y/n): ").lower()
+    if save_option == 'y':
+        filename = input("Enter the filename (with .txt extension): ")
+        save_maze_to_file(maze, filename)
+        export_option = input("Do you want to export the maze in CSV or JSON format? (csv/json/n): ").lower()
+        if export_option == 'csv':
+            export_maze_to_csv(maze, filename.replace('.txt', '.csv'))
+        elif export_option == 'json':
+            export_maze_to_json(maze, filename.replace('.txt', '.json'))
+        log_event(f"Maze saved and exported to {filename}")
+
  solve_option = input("\nDo you want to solve the maze? (y/n): ").lower()
     if solve_option == 'y':
         interactive_option = input("Solve manually or automatically? (m/a): ").lower()
@@ -311,3 +322,63 @@ def generate_prim_maze(width, height):
 
     maze[1][1] = PASSAGE
     add_walls(1, 1)
+
+while walls:
+        x, y = random.choice(walls)
+        walls.remove((x, y))
+        maze[x][y] = PASSAGE
+        add_walls(x, y)
+    
+    maze[0][1] = START
+    maze[height - 1][width - 2] = EXIT
+
+    return maze
+
+def random_maze(width, height):
+    maze = [[WALL for _ in range(width)] for _ in range(height)]
+    for x in range(height):
+        for y in range(width):
+            maze[x][y] = PASSAGE if random.random() > 0.3 else WALL
+    maze[0][1] = START
+    maze[height - 1][width - 2] = EXIT
+    return maze
+
+# Enhanced configuration management
+def save_configuration(config, filename='config.json'):
+    with open(filename, 'w') as file:
+        json.dump(config, file, indent=4)
+    print(f"Configuration saved to {filename}")
+
+def load_configuration(filename='config.json'):
+    if os.path.exists(filename):
+        with open(filename, 'r') as file:
+            return json.load(file)
+    else:
+        return {}
+
+# Advanced maze analysis
+def analyze_maze_path_lengths(maze):
+    path_lengths = []
+    for x in range(1, len(maze) - 1):
+        for y in range(1, len(maze[0]) - 1):
+            if maze[x][y] == PASSAGE:
+                length = bfs_path_length(maze, x, y)
+                if length:
+                    path_lengths.append(length)
+    return path_lengths
+
+def bfs_path_length(maze, start_x, start_y):
+    queue = [(start_x, start_y, 0)]
+    visited = set()
+    visited.add((start_x, start_y))
+    
+    while queue:
+        x, y, length = queue.pop(0)
+        if maze[x][y] == EXIT:
+            return length
+        for dx, dy in DIRECTIONS:
+            nx, ny = x + dx, y + dy
+            if 0 <= nx < len(maze) and 0 <= ny < len(maze[0]) and (nx, ny) not in visited and maze[nx][ny] in [PASSAGE, EXIT]:
+                queue.append((nx, ny, length + 1))
+                visited.add((nx, ny))
+    return None
