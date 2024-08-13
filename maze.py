@@ -491,4 +491,47 @@ def main():
         log_action(f"Maze saved and exported to {filename}")
 
 
+    solve_option = input("\nDo you want to solve the maze? (y/n): ").lower()
+    if solve_option == 'y':
+        interactive_option = input("Solve manually or automatically? (m/a): ").lower()
+        if interactive_option == 'm':
+            interactive_maze_solver(maze)
+            log_action("User solved maze manually.")
+        elif interactive_option == 'a':
+            solution = []
+            start_time = time.time()
+            if solve_maze(maze, 1, 1, solution):
+                solve_time = time.time() - start_time
+                print("\nMaze Solved! Solution Path:")
+                for step in solution:
+                    print(step)
+                print(f"Solution Length: {maze_complexity(solution)}")
+                print(f"Solve Time: {solve_time:.2f} seconds")
+                display_solution_path(solution)
+                log_action(f"Maze solved automatically in {solve_time:.2f} seconds.")
+            else:
+                print("\nNo solution found.")
+                log_action("Maze solving failed.")
+        
+        retry_option = input("\nDo you want to reset the maze and try again? (y/n): ").lower()
+        if retry_option == 'y':
+            reset_maze(maze)
+            main()
+
+    print(f"Maze Generation Time: {generation_time:.2f} seconds")
+
+    preferences = {
+        'difficulty': difficulty,
+        'algorithm': algorithm
+    }
+    save_user_preferences(preferences)
+    save_configuration(config)
+
+    print("For more help, refer to the user manual.")
+    display_user_manual()
+
+if __name__ == "__main__":
+    main()
+
+
 
