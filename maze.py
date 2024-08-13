@@ -405,7 +405,7 @@ def choose_difficulty():
     print("Select maze difficulty:")
     for key, value in difficulties.items():
         print(f"{key}: {value}")
-    choice = input("Enter choice (1/2/3): ").strip()
+    choice = input(" Please Enter choice (1/2/3): ").strip()
     return difficulties.get(choice, 'Easy')
 
 def choose_algorithm():
@@ -422,7 +422,7 @@ def display_user_manual():
     Maze Generator User Manual:
 
     1. Generating a Maze:
-       - Select the maze width and height (must be odd and >= 7).
+       - Select the maze width and height (must be an odd value  and >= 7).
        - Choose the difficulty level and generation algorithm.
 
     2. Saving the Maze:
@@ -446,4 +446,49 @@ def display_user_manual():
     For additional help, consult the documentation or contact support.
     """
     print(manual)
+# Main function to run the maze program
+def main():
+    print("Welcome to the Maze Generator!")
+
+    user_preferences = load_user_preferences()
+
+    print("Loading configuration...")
+    config = load_configuration()
+    
+    width, height = get_user_dimensions()
+    difficulty = choose_difficulty()
+    algorithm = choose_algorithm()
+
+    start_time = time.time()
+    
+    if algorithm == 'DFS':
+        maze = create_maze(width, height)
+    elif algorithm == 'Prim':
+        maze = generate_prim_maze(width, height)
+    elif algorithm == 'Random':
+        maze = random_maze(width, height)
+    else:
+        print("Unknown algorithm. Using DFS by default.")
+        maze = create_maze(width, height)
+
+    generation_time = time.time() - start_time
+    log_action(f"Maze generated with {algorithm} algorithm, dimensions {width}x{height}")
+
+    print("\nGenerated Maze:")
+    print_maze(maze)
+
+    display_maze_stats(maze)
+
+    save_option = input("\nDo you want to save the maze to a file? (y/n): ").lower()
+    if save_option == 'y':
+        filename = input("Enter the filename (with .txt extension): ")
+        save_maze_to_file(maze, filename)
+        export_option = input("Do you want to export the maze in CSV or JSON format? (csv/json/n): ").lower()
+        if export_option == 'csv':
+            export_maze_to_csv(maze, filename.replace('.txt', '.csv'))
+        elif export_option == 'json':
+            export_maze_to_json(maze, filename.replace('.txt', '.json'))
+        log_action(f"Maze saved and exported to {filename}")
+
+
 
