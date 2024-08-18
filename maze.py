@@ -57,8 +57,8 @@ def print_maze(maze, style='Default', colored_output=False):
 def save_maze_to_file(maze, filename):
     with open(filename, 'w') as file:
         for row in maze:
-            file.write(''.joining(row) + '\n')
-    print(f"Maze information saved  to {filename}")
+            file.write(''.join(row) + '\n')
+    print(f"Maze information saved to {filename}")
 
 # Function to export the maze as CSV file
 def export_maze_to_csv(maze, filename):
@@ -260,7 +260,7 @@ def main():
 
     display_maze_stats(maze)
 
- save_option = input("\nDo you want to save the maze to a file? (y/n): ").lower()
+    save_option = input("\nDo you want to save the maze to a file? (y/n): ").lower()
     if save_option == 'y':
         filename = input("Enter the filename (with .txt extension): ")
         save_maze_to_file(maze, filename)
@@ -271,7 +271,7 @@ def main():
             export_maze_to_json(maze, filename.replace('.txt', '.json'))
         log_event(f"Maze saved and exported to {filename}")
 
- solve_option = input("\nDo you want to solve the maze? (y/n): ").lower()
+    solve_option = input("\nDo you want to solve the maze? (y/n): ").lower()
     if solve_option == 'y':
         interactive_option = input("Solve manually or automatically? (m/a): ").lower()
         if interactive_option == 'm':
@@ -323,16 +323,18 @@ def generate_prim_maze(width, height):
     maze[1][1] = PASSAGE
     add_walls(1, 1)
 
-while walls:
+    while walls:
         x, y = random.choice(walls)
         walls.remove((x, y))
         maze[x][y] = PASSAGE
         add_walls(x, y)
-    
+
+    # Set entrance and exit after maze is fully generated
     maze[0][1] = START
     maze[height - 1][width - 2] = EXIT
-
+    
     return maze
+
 
 def random_maze(width, height):
     maze = [[WALL for _ in range(width)] for _ in range(height)]
@@ -451,8 +453,6 @@ def main():
     print("Welcome to the Maze Generator!")
 
     user_preferences = load_user_preferences()
-
-    print("Loading configuration...")
     config = load_configuration()
     
     width, height = get_user_dimensions()
@@ -460,7 +460,7 @@ def main():
     algorithm = choose_algorithm()
 
     start_time = time.time()
-    
+
     if algorithm == 'DFS':
         maze = create_maze(width, height)
     elif algorithm == 'Prim':
@@ -489,7 +489,6 @@ def main():
         elif export_option == 'json':
             export_maze_to_json(maze, filename.replace('.txt', '.json'))
         log_action(f"Maze saved and exported to {filename}")
-
 
     solve_option = input("\nDo you want to solve the maze? (y/n): ").lower()
     if solve_option == 'y':
@@ -532,6 +531,5 @@ def main():
 
 if __name__ == "__main__":
     main()
-
 
 
