@@ -1,10 +1,9 @@
 The script generates and manages mazes in several ways. Here's a quick overview:
-
-    Maze Creation: Generate a maze with specified dimensions using algorithms like Depth-First Search (DFS), Prim's algorithm, or a random method.
-    Maze Visualization: Print the maze with customizable symbols and styles. You can also save or export it in text, CSV, or JSON formats.
-    Maze Solving: Solve the maze manually by navigating with keyboard inputs or automatically using the algorithm. You can view the solution path and solve time.
-    Maze Analysis: Analyze the maze for statistics such as wall and passage counts, dead ends, loops, and difficulty.
-    User Interaction: Save user preferences, configure maze themes, log events, and load previous settings. The script also offers a user manual for guidance.
+Maze Creation: Generate a maze with specified dimensions using algorithms like Depth-First Search (DFS), Prim's algorithm, or a random method.
+Maze Visualization: Print the maze with customizable symbols and styles. You can also save or export it in text, CSV, or JSON formats.
+Maze Solving: Solve the maze manually by navigating with keyboard inputs or automatically using the algorithm. You can view the solution path and solve time.
+Maze Analysis: Analyze the maze for statistics such as wall and passage counts, dead ends, loops, and difficulty.
+User Interaction: Save user preferences, configure maze themes, log events, and load previous settings. The script also offers a user manual for guidance.
 
 
 
